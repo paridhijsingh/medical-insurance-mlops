@@ -2,31 +2,48 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import pickle
 import numpy as np
+import os
 
-# 1. Initialize the FastAPI app
 app = FastAPI()
 
-# 2. Load the "Brain" we created in Phase 1
-with open('model.pkl', 'rb') as f:
+# Load the model
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
+
+with open(MODEL_PATH, 'rb') as f:
     model = pickle.load(f)
 
-# 3. Define what the incoming data should look like (Pydantic)
-# This is where your Stats background helps with data types!
+# 1. FIX: Added 'region' here so the API knows to expect it!
 class PatientData(BaseModel):
     age: int
-    sex: int      # 0 for male, 1 for female
+    sex: int      
     bmi: float
     children: int
-    smoker: int   # 1 for yes, 0 for no
+    smoker: int   
+    region: int = 0  
 
-# 4. Create the "Predict" endpoint
 @app.post("/predict")
-def predict_charges(data: PatientData):
-    # Convert the incoming JSON data into a format the model understands
-    features = np.array([[data.age, data.sex, data.bmi, data.children, data.smoker]])
-    
-    # Make the prediction
-    prediction = model.predict(features)
-    
-    # Return the result as JSON
-    return {"estimated_charges": round(float(prediction[0]), 2)}
+def predict(input_data: PatientData):
+    try:
+        # 1. Prepare features - MATCHING THE 5 EXPECTED COLUMNS
+        # Check your Phase 1 training to see which 5 you used.
+        # It is usually: age, bmi, children, smoker, sex
+        features = np.array([[
+        input_data.age, 
+        input_data.sex, 
+        input_data.bmi, 
+        input_data.children,
+        input_data.smoker
+    ]])
+        
+        # 2. Get prediction
+        prediction_output = model.predict(features)
+        
+        # 3. Apply the "Safety Floor" and return
+        raw_val = model.predict(features)[0]
+        print(f"DEBUG: Raw model output is {raw_val}") # Check your terminal for this!
+        final_prediction = max(0, float(raw_val))
+        return {"estimated_charges": final_prediction}
+    except Exception as e:
+        print(f"Prediction Error: {e}")
+        return {"error": str(e)}

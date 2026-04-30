@@ -17,10 +17,15 @@ This project demonstrates a full machine learning lifecycle—from training a re
 
 ## 📸 Deployment Proof
 
-![API Success Documentation](./Evidence/Screenshot_Success_200.png)
-_(Replace this with the actual filename of your "200 Success" screenshot)_
+Below is the verification of the FastAPI service successfully processing a request and returning a prediction:
+
+![API Success Prediction](./Evidence/Screenshot 2026-04-30 at 9.32.27 AM.png)
 
 ## 🏃 How to Run Locally
 
-1. **Start the API:** `uvicorn src.main:app --reload`
-2. **Start the UI:** `streamlit run streamlit_app.py`
+1. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. **Start the API (Backend):** - uvicorn src.main:app --reload
+3. **Start the UI:** - streamlit run streamlit_app.py
