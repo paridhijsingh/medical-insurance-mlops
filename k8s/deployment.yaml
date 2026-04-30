@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-api-deployment
+spec:
+  replicas: 2 # This tells AWS to run TWO copies for reliability
+  selector:
+    matchLabels:
+      app: insurance-api
+  template:
+    metadata:
+      labels:
+        app: insurance-api
+    spec:
+      containers:
+        - name: insurance-api-container
+          image: 966721478940.dkr.ecr.us-east-1.amazonaws.com/insurance-api:latest
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insurance-api-service
+spec:
+  type: LoadBalancer # This creates a public AWS URL for your AI
+  ports:
+    - port: 80
+      targetPort: 8000
+  selector:
+    app: insurance-api
