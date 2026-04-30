@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import pickle
 import numpy as np
 import os
+import spacy
 
 app = FastAPI()
 
@@ -47,3 +48,16 @@ def predict(input_data: PatientData):
     except Exception as e:
         print(f"Prediction Error: {e}")
         return {"error": str(e)}
+
+# Load the spacy model
+nlp = spacy.load("en_core_web_sm")
+
+@app.post("/extract_clinical")
+async def extract_clinical(data: dict):
+    text = data.get("note", "")
+    doc = nlp(text)
+    entities = [{"text": ent.text, "label": ent.label_} for ent in doc.ents]
+    return {
+        "status": "success",
+        "entities_found": entities
+    }

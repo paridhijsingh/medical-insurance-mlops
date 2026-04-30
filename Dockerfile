@@ -12,7 +12,10 @@ COPY main.py .
 COPY model.pkl .
 
 # 5. Install libraries
-RUN pip install --no-cache-dir fastapi uvicorn scikit-learn pandas numpy
+RUN pip install --no-cache-dir fastapi uvicorn scikit-learn pandas numpy spacy
+
+# Crucial: Download the NLP model so the container has a 'brain'
+RUN python -m spacy download en_core_web_sm
 
 # 6. Run as a non-root user (Professional Security Practice)
 RUN useradd -m appuser
