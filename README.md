@@ -19,7 +19,7 @@ This project demonstrates a full machine learning lifecycle—from training a re
 
 Below is the verification of the FastAPI service successfully processing a request and returning a prediction:
 
-![API Success Prediction](./Evidence/Screenshot 2026-04-30 at 9.32.27 AM.png)
+![API Success Prediction](./Evidence/Screenshot%202026-04-29%20at%207.04.51%20PM.png)
 
 ## 🏃 How to Run Locally
 
